@@ -15,6 +15,10 @@ local-web-server(>=1.0.0);
 
 ##### Running for development
 
+Before of run, install the bower dependencies:
+
+$ bower install
+
 Go to on src folder and run: 
 
 $ ws
