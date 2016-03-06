@@ -8,3 +8,25 @@
         <div id="map" style="height:90%; margin:50px"></div>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row" style="text-align: center">
+            <div class="col-xs-4">
+            </div>
+            <div class="col-xs-4" style="margin-top:15px">
+                <button class="btn btn-lg blue" ng-click="circleCtrl.back()">
+                    <i class="fa fa-fast-backward" style="color: #fff;"></i>
+                </button>
+                <button class="btn btn-lg blue" ng-click="circleCtrl.next()">
+                    <i class="fa fa-fast-forward" style="color: #fff;"></i>
+                </button>
+            </div>
+            <div class="col-xs-4">
+                <h1 class="text-blue pull-right">
+                    <b>{{circleCtrl.currentHealthHistory.label}}</b>
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>

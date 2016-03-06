@@ -6,9 +6,9 @@ angular.module('smscApp', [
     .config(function ($routeProvider, $locationProvider) {
         $routeProvider
             .when('/', {
-                templateUrl: 'templates/main.html',
-                controller: 'MainCtrl',
-                controllerAs: 'mainCtrl'
+                templateUrl: 'templates/circle.html',
+                controller: 'CircleCtrl',
+                controllerAs: 'circleCtrl'
             })
             .when('/circle', {
                 templateUrl: 'templates/circle.html',
