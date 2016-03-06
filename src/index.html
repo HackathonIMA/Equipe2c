@@ -18,8 +18,13 @@
       <p class="browsehappy">Você está utilizando um navegador de Internet <strong>desatualizado</strong>. Por favor  <a href="http://browsehappy.com/"> atualize o seu navegador de Internet</a> para o funcionamento correto.</p>
     <![endif]-->
     <div id="wrapper">
+        <div class="header-line">
+            <div class="blue component"></div>
+            <div class="green component"></div>
+            <div class="yellow component"></div>
+        </div>
         <nav class="navbar navbar-default navbar-static-top">
-            <div class="container-fluid">
+            <div class="container-fluid container">
                 <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -50,14 +55,26 @@
                 </div>
             </div>
             <!-- /.navbar-collapse -->
-    </div>
-    <!-- /.container-fluid -->
-    </nav>
-    <div id="page-wrapper" class="row">
-        <div class="col-lg-12">
-            <div style="height:100%" data-ng-view=""></div>
+            <!-- /.container-fluid -->
+        </nav>
+        <div id="page-wrapper" class="container">
+            <div class="col-lg-12">
+                <div style="height:100%" data-ng-view=""></div>
+            </div>
         </div>
-    </div>
+        <div class="footer" style="border-top:1px solid #e7e7e7">
+            <div class="container" style="margin-top:10px">
+                <p>
+                    <span class="fa fa-hand-spock-o"></span> Developed by Boots Team.
+                    <a class="pull-right" target="_blank" href="http://hackathon.ima.sp.gov.br/api-portal/"> Hackathon Campinas</a>
+                </p>
+            </div>
+            <div class="header-line">
+                <div class="blue component"></div>
+                <div class="green component"></div>
+                <div class="yellow component"></div>
+            </div>
+        </div>
     </div>
     <script src="lib/jquery/dist/jquery.js"></script>
     <script src="lib/angular/angular.js"></script>

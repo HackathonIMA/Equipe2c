@@ -27,9 +27,40 @@
     font-style: normal;
 }
 
+.header-line {
+    margin:0px;
+    width:100%;
+    padding:0px;
+    height:4px;
+    display: inline-flex;
+}
 
-.validation-form .ng-invalid.ng-touched {
-    border-color: #FA787E;
+#wrapper {
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.header-line .component {
+    width: 33.333333%;
+    height: 4px;
+}
+
+.green {
+    background-color: #307a2d;
+}
+
+.blue {
+    background-color: #075fa6;
+}
+
+.red {
+    background-color: #e15615;
+}
+
+.yellow {
+    background-color: #fcdb00;
 }
 
 /**
