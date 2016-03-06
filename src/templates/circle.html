@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" style="margin-top:5px">
     <div class="col-lg-12" style="text-align: center">
         <div id="map" style="height:90%; margin:50px"></div>
     </div>
@@ -7,6 +7,22 @@
     <div class="col-lg-12">
         <div class="row" style="text-align: center">
             <div class="col-xs-4">
+                <b>Legenda</b>
+                <div style="display:flex">
+                    <div class="green" style="height:15px; width:20px;margin-right:5px"></div>
+                    <div>Pouca Utilização</div>
+                </div>
+                <div style="display:flex">
+                    <div class="yellow" style="height:15px; width:20px; margin-right:5px"></div>
+                    <div>Boa utilização</div>
+                </div>
+                <div style="display:flex">
+                    <div class="red" style="height:15px; width:20px;margin-right:5px"></div>
+                    <div>Acima da capacidade</div>
+                </div>
+                <div>
+                    Obs: Número de atendimentos / Quantidade
+                </div>
             </div>
             <div class="col-xs-4" style="margin-top:15px">
                 <button class="btn btn-lg blue" ng-click="circleCtrl.back()">
@@ -17,7 +33,8 @@
                 </button>
             </div>
             <div class="col-xs-4">
-                <h1 class="text-blue pull-right">
+                Mês / Ano
+                <h1 class="text-blue" style="margin-top: 0px">
                     <b>{{circleCtrl.currentHealthHistory.label}}</b>
                 </h1>
             </div>
