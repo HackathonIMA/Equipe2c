@@ -14,7 +14,7 @@ function CircleCtrl($routeParams, $rootScope, $scope, HealthCareService) {
     HealthCareService.findAll();
     this.healthHistory = {};
     this.currentHealthHistory = {};
-    this.currentIndex = 0;
+    this.currentIndex = 1;
     this.circles = [];
 
     this.red = '#e15615';
@@ -61,13 +61,11 @@ CircleCtrl.prototype.createCircle = function (healthHistory) {
         var circle = {};
         var history = healthHistory.hospitals[key];
 
-        console.log(history);
-
         if (history.maxCapacityLevel < 0.5) {
             circleColor = this.green;
         } else if (history.maxCapacityLevel > 0.7) {
             circleColor = this.yellow;
-        } else if (history.maxCapacityLevel > 0.8) {
+        } else if (history.maxCapacityLevel > 1) {
             circleColor = this.red;
         } else {
             circleColor = '#ffff';
@@ -101,7 +99,7 @@ CircleCtrl.prototype.createCircle = function (healthHistory) {
 
 
 CircleCtrl.prototype.back = function () {
-    if (Object.keys(this.healthHistory).length > 0) {
+    if (this.currentIndex > 1) {
         this.currentIndex--;
         var key = Object.keys(this.healthHistory)[this.currentIndex];
         this.currentHealthHistory = this.healthHistory[key];
@@ -110,7 +108,7 @@ CircleCtrl.prototype.back = function () {
 }
 
 CircleCtrl.prototype.next = function () {
-    if (Object.keys(this.healthHistory).length > this.currentIndex) {
+    if (this.currentIndex < Object.keys(this.healthHistory).length - 1) {
         this.currentIndex++;
         var key = Object.keys(this.healthHistory)[this.currentIndex];
         this.currentHealthHistory = this.healthHistory[key];
