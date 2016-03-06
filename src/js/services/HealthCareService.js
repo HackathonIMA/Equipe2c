@@ -39,12 +39,6 @@ function HealthCareService($http, $rootScope) {
                     newData[key].hospitals[keyHospital].lat = element.locale_lat;
                     newData[key].hospitals[keyHospital].lng = element.locale_lng;
 
-                    // if (!newData[key].hospitals[keyHospital].lat) {
-
-                    // newData[key].hospitals[keyHospital].lat = -22.8114338;
-                    // newData[key].hospitals[keyHospital].lng = -47.0481918;
-                    // }
-
                     newData[key].hospitals[keyHospital].maxCapacityLevel = element.nivel_lotacao;
                 });
 

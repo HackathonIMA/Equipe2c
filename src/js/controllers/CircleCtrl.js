@@ -15,6 +15,12 @@ function CircleCtrl($routeParams, $rootScope, $scope, HealthCareService) {
     this.healthHistory = {};
     this.currentHealthHistory = {};
     this.currentIndex = 0;
+    this.circles = [];
+
+    this.red = '#e15615';
+    this.yellow = '#fcdb00';
+    this.green = '#307a2d';
+
     var that = this;
 
     $scope.$on('foundHealthCares', function (event, data) {
@@ -45,36 +51,46 @@ CircleCtrl.prototype.changeColor = function () {
 
 CircleCtrl.prototype.createCircle = function (healthHistory) {
 
+    this.circles.forEach(function(element) {
+        element.setMap(null);
+    });
 
-    var points = [];
-
-    var i, lat, lng;
+    var i, lat, lng, circleColor;
 
     for (var key in healthHistory.hospitals) {
         var circle = {};
+        var history = healthHistory.hospitals[key];
 
-        lat = healthHistory.hospitals[key].lat;
-        lng = healthHistory.hospitals[key].lng;
+        console.log(history);
 
-        console.log(lat + ' - ' + lng);
+        if (history.maxCapacityLevel < 0.5) {
+            circleColor = this.green;
+        } else if (history.maxCapacityLevel > 0.7) {
+            circleColor = this.yellow;
+        } else if (history.maxCapacityLevel > 0.8) {
+            circleColor = this.red;
+        } else {
+            circleColor = '#ffff';
+        }
 
         var config = {
-            strokeColor: '#FF0000',
+            strokeColor: '#000',
             strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#FF0000',
-            fillOpacity: 0.03,
+            strokeWeight: 1,
+            fillColor: circleColor,
+            fillOpacity: 0.3,
             map: this.map,
             center: {
-                lat: lat,
-                lng: lng
+                lat: history.lat,
+                lng: history.lng
             },
-            radius: 1000
+            radius: 500
         };
 
 
-
         circle = new google.maps.Circle(config);
+
+        this.circles.push(circle);
 
         this.marker = new google.maps.Marker({
             map: this.map,
@@ -89,7 +105,7 @@ CircleCtrl.prototype.back = function () {
         this.currentIndex--;
         var key = Object.keys(this.healthHistory)[this.currentIndex];
         this.currentHealthHistory = this.healthHistory[key];
-        that.createCircle(this.currentHealthHistory);
+        this.createCircle(this.currentHealthHistory);
     }
 }
 
@@ -98,6 +114,6 @@ CircleCtrl.prototype.next = function () {
         this.currentIndex++;
         var key = Object.keys(this.healthHistory)[this.currentIndex];
         this.currentHealthHistory = this.healthHistory[key];
-        that.createCircle(this.currentHealthHistory);
+        this.createCircle(this.currentHealthHistory);
     }
 }
