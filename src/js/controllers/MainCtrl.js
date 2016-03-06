@@ -3,14 +3,19 @@
 angular.module('smscApp').controller('MainCtrl', MainCtrl);
 
 
-MainCtrl.$inject = ['$routeParams', '$rootScope', 'HealthCareService'];
+MainCtrl.$inject = ['$routeParams', '$rootScope', '$scope', 'HealthCareService'];
 
-function MainCtrl($routeParams, $rootScope, HealthCareService) {
+function MainCtrl($routeParams, $rootScope, $scope, HealthCareService) {
     this.heatmap = {};
     this.healthCareService = HealthCareService;
     this.map = {};
     this.init();
     this.rootScope = $rootScope;
+    var that = this;
+
+    $scope.$on('healthHistoryChanged', function (event, data) {
+        that.plotMap(data);
+    });
 }
 
 MainCtrl.prototype.init = function () {
@@ -35,53 +40,60 @@ MainCtrl.prototype.init = function () {
                 newData[key].hospitals[keyHospital] = newData[key].hospitals[keyHospital] || {};
 
                 newData[key].hospitals[keyHospital].name = element.local_atendimento;
-                newData[key].hospitals[keyHospital].lat = element.lat;
-                newData[key].hospitals[keyHospital].lng = element.lng;
+                // newData[key].hospitals[keyHospital].lat = element.lat;
+                // newData[key].hospitals[keyHospital].lng = element.lng;
+
+                if (!newData[key].hospitals[keyHospital].lat) {
+                    newData[key].hospitals[keyHospital].lat = -22.8114338;
+                    newData[key].hospitals[keyHospital].lng = -47.0481918;
+                }
+
                 newData[key].hospitals[keyHospital].maxCapacityLevel = element.nivel_lotacao;
             });
 
             that.healthCares = newData;
 
             that.rootScope.$broadcast('healthCaresLoaded', that.healthCares);
-
-            console.log(that.healthCares);
         },
         function (errorPayload) {
             console.log("Error ->" + errorPayload);
         });
 
     this.map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 17,
+        zoom: 13,
         center: {
-            lat: -22.8114338,
-            lng: -47.0481918
+            lat: -22.9099384,
+            lng: -47.0626332
         },
-        mapTypeId: google.maps.MapTypeId.SATELLITE
+        mapTypeId: google.maps.MapTypeId.ROAD
     });
+};
 
-    this.heatmap = new google.maps.visualization.HeatmapLayer({
-        data: this.getPoints(),
-        map: this.map
-    });
+MainCtrl.prototype.plotMap = function (healthHistory) {
+    this.heatmap = new google.maps.visualization.HeatmapLayer(this.getConfigHeatMap(healthHistory));
 };
 
 MainCtrl.prototype.toggleHeatmap = function () {
     this.heatmap.setMap(heatmap.getMap() ? null : this.map);
 };
 
-MainCtrl.prototype.getPoints = function () {
+MainCtrl.prototype.getConfigHeatMap = function (healthHistory) {
+    var config = {map: this.map};
+
     var points = [];
 
     var i, lat, lng;
-    lat = -22.8114338;
-    lng = -47.0481918;
 
-    for (i = 0; i < 10; i++) {
-        lng = lng + 0.0001;
+    for (var key in healthHistory.hospitals) {
+        lat = healthHistory.hospitals[key].lat;
+        lng = healthHistory.hospitals[key].lng;
         points.push(new google.maps.LatLng(lat, lng));
     }
 
-    return points;
+    config.data = points;
+    config.radius = 50;
+
+    return config;
 };
 
 MainCtrl.prototype.changeGradient = function () {

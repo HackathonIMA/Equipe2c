@@ -3,110 +3,42 @@
 angular.module('smscApp').controller('TimelineCtrl', TimelineCtrl);
 
 
-TimelineCtrl.$inject = ['$routeParams', '$timeout', 'HealthCareService', '$scope'];
+TimelineCtrl.$inject = ['$routeParams', 'HealthCareService', '$rootScope', '$scope'];
 
-function TimelineCtrl($routeParams, $timeout, HealthCareService, $scope) {
-    this.isPlaying = false;
-    this.healthCareService = HealthCareService;
-    this.dataIndex = 0;
-    this.timelineSpeed = 1000;
+function TimelineCtrl($routeParams, HealthCareService, $rootScope, $scope) {
     this.init();
-    this.timeout = $timeout;
+    this.healthCareService = HealthCareService;
     this.healthHistory = {};
-    this.timelineTimer = [];
-    this.healthHistory.formatedDate = '';
-
+    this.rootScope = $rootScope;
+    this.currentHealthHistory = {};
+    this.currentIndex = 0;
     var that = this;
+
     $scope.$on('healthCaresLoaded', function (event, data) {
         that.healthHistory = data;
+        that.currentIndex = 0;
+        var key = Object.keys(that.healthHistory)[that.currentIndex];
+        that.currentHealthHistory = that.healthHistory[key];
     });
 }
 
 TimelineCtrl.prototype.init = function () {};
 
-TimelineCtrl.prototype.playClick = function ($event) {
-    this.isPlaying = !this.isPlaying;
-    var iconClass = '';
-
-    if (this.isPlaying) {
-        this.playTimeline();
-        iconClass = 'fa fa-pause';
-    } else {
-        this.stopTimeline();
-        iconClass = 'fa fa-play'
-    }
-
-    this.buttonIcon = $event.currentTarget.children[0];
-    $(this.buttonIcon).removeClass();
-    $(this.buttonIcon).addClass(iconClass);
-};
-
-TimelineCtrl.prototype.slow = function () {
-    // this.timeout.cancel(this.timelineTimer.pop());
-    // TODO
-
-    if (this.timelineSpeed < 4000) {
-        this.timelineSpeed = this.timelineSpeed * 2;
-        this.playTimeline();
+TimelineCtrl.prototype.back = function () {
+    if (Object.keys(this.healthHistory).length > 0) {
+        this.currentIndex--;
+        var key = Object.keys(this.healthHistory)[this.currentIndex];
+        this.currentHealthHistory = this.healthHistory[key];
+        this.rootScope.$broadcast('healthHistoryChanged', this.currentHealthHistory);
     }
 }
 
-TimelineCtrl.prototype.fast = function () {
-    // this.timeout.cancel(this.timelineTimer.pop());
-    // TODO
-    if (this.timelineSpeed > 250) {
-        this.timelineSpeed = this.timelineSpeed / 2;
-        this.playTimeline();
-    }
-}
-
-TimelineCtrl.prototype.stopTimeline = function () {
-    for (var i = 0; i < this.timelineTimer.length; i++) {
-        this.timeout.cancel(this.timelineTimer[i]);
+TimelineCtrl.prototype.next = function () {
+    if (Object.keys(this.healthHistory).length > this.currentIndex) {
+        this.currentIndex++;
+        var key = Object.keys(this.healthHistory)[this.currentIndex];
+        this.currentHealthHistory = this.healthHistory[key];
+        this.rootScope.$broadcast('healthHistoryChanged', this.currentHealthHistory);
     }
 
-    while (this.timelineTimer.length > 0) {
-        this.timelineTimer.pop();
-    }
-
-    this.isPlaying = false;
-};
-
-TimelineCtrl.prototype.playTimeline = function () {
-    var that = this;
-
-    var i = 1;
-
-    for (var key in this.healthHistory) {
-        if (this.isPlaying) {
-            this.doTimeout(key, this.healthHistory, i)
-            i++;
-        } else {
-            return;
-        }
-    }
-};
-
-TimelineCtrl.prototype.doTimeout = function (key, healthHistory, i) {
-    var that = this;
-
-    this.timelineTimer.push(this.timeout(function () {
-        console.log(key);
-
-        if (Object.keys(healthHistory).length > that.dataIndex) {
-            var history = healthHistory[key];
-
-            that.healthHistory = history;
-
-            // that.playTimeline();
-
-            that.dataIndex++;
-        } else {
-            that.stopTimeline();
-            that.dataIndex = 0;
-            // that.timelineSpeed = 1000;
-            $(that.buttonIcon).removeClass();
-            $(that.buttonIcon).addClass('glyphicon glyphicon-repeat');
-        }
-    }, 1000 * i));
 }
