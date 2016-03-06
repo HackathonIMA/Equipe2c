@@ -15,7 +15,6 @@
 /**
  *Font Awesome Fonts
  */
-
 @font-face {
     font-family: 'FontAwesome';
     src: url('./lib/font-awesome/fonts/fontawesome-webfont.eot?v=4.1.0');
@@ -55,12 +54,39 @@
     background-color: #075fa6;
 }
 
+.text-blue {
+    color: #075fa6;
+}
+
+.text-red {
+    color: #e15615;
+}
+
 .red {
     background-color: #e15615;
 }
 
 .yellow {
     background-color: #fcdb00;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+
+.btn-circle.btn-lg {
+    width: 50px;
+    height: 50px;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.33;
+    border-radius: 25px;
 }
 
 /**
