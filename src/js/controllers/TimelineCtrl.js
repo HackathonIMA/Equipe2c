@@ -8,6 +8,7 @@ TimelineCtrl.$inject = ['$routeParams', '$timeout'];
 function TimelineCtrl($routeParams, $timeout) {
     this.isPlaying = false;
     this.dataIndex = 0;
+    this.timelineSpeed = 1000;
     this.init();
     this.timeout = $timeout;
     this.healthHistory = {};
@@ -51,6 +52,24 @@ TimelineCtrl.prototype.playClick = function ($event) {
     $(this.buttonIcon).addClass(iconClass);
 };
 
+TimelineCtrl.prototype.slow = function () {
+    this.timeout.cancel(this.timelineTimer);
+
+    if (this.timelineSpeed < 4000) {
+        this.timelineSpeed = this.timelineSpeed * 2;
+        this.playTimeline();
+    }
+}
+
+TimelineCtrl.prototype.fast = function () {
+    this.timeout.cancel(this.timelineTimer);
+
+    if (this.timelineSpeed > 250) {
+        this.timelineSpeed = this.timelineSpeed / 2;
+        this.playTimeline();
+    }
+}
+
 TimelineCtrl.prototype.stopTimeline = function () {
     this.timeout.cancel(this.timelineTimer);
     this.isPlaying = false;
@@ -74,8 +93,9 @@ TimelineCtrl.prototype.playTimeline = function () {
         } else {
             that.stopTimeline();
             that.dataIndex = 0;
+            that.timelineSpeed = 1000;
             $(that.buttonIcon).removeClass();
             $(that.buttonIcon).addClass('glyphicon glyphicon-repeat');
         }
-    }, 1000);
+    }, this.timelineSpeed);
 };

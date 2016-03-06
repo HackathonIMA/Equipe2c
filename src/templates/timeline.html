@@ -1,14 +1,24 @@
-<div class="row" ng-controller="TimelineCtrl as timelineCtrl" style="text-align: center">
-    <div class="col-xs-4">
-    </div>
-    <div class="col-xs-4">
-        <button class="btn-circle btn-lg blue" style="margin-top:10px" ng-click="timelineCtrl.playClick($event)">
-            <i class="fa fa-play" style="color: #fff;"></i>
-        </button>
-    </div>
-    <div class="col-xs-4">
-    	<h1 class="text-blue pull-right">
-    		<b>{{timelineCtrl.healthHistory.formatedDate}}</b>
-    	</h1>
+<div class="row" ng-controller="TimelineCtrl as timelineCtrl">
+    <div class="col-lg-12">
+        <div class="row" style="text-align: center">
+            <div class="col-xs-4">
+            </div>
+            <div class="col-xs-4" style="margin-top:15px">
+                <button class="btn btn-lg blue" ng-click="timelineCtrl.slow()">
+                    <i class="fa fa-fast-backward" style="color: #fff;"></i>
+                </button>
+                <button class="btn btn-lg blue" ng-click="timelineCtrl.playClick($event)">
+                    <i class="fa fa-play" style="color: #fff;"></i>
+                </button>
+                <button class="btn btn-lg blue" ng-click="timelineCtrl.fast()">
+                    <i class="fa fa-fast-forward" style="color: #fff;"></i>
+                </button>
+            </div>
+            <div class="col-xs-4">
+                <h1 class="text-blue pull-right">
+            <b>{{timelineCtrl.healthHistory.formatedDate}}</b>
+        </h1>
+            </div>
+        </div>
     </div>
 </div>
