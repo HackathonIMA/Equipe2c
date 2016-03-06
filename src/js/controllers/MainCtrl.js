@@ -3,15 +3,53 @@
 angular.module('smscApp').controller('MainCtrl', MainCtrl);
 
 
-MainCtrl.$inject = ['$routeParams'];
+MainCtrl.$inject = ['$routeParams', '$rootScope', 'HealthCareService'];
 
-function MainCtrl($routeParams) {
+function MainCtrl($routeParams, $rootScope, HealthCareService) {
     this.heatmap = {};
+    this.healthCareService = HealthCareService;
     this.map = {};
     this.init();
+    this.rootScope = $rootScope;
 }
 
 MainCtrl.prototype.init = function () {
+
+    var promise = this.healthCareService.findAll;
+    var that = this;
+
+    promise.then(function (payload, errorPayload) {
+            var data = payload.data.health_cares;
+            var newData = {};
+
+            data.forEach(function (element, index) {
+                var key = element.year + '-' + element.month;
+                newData[key] = newData[key] || {};
+                newData[key].label = ('0' + element.month).slice(-2) + '/' + element.year.toString();
+                newData[key].month = element.month;
+                newData[key].year = element.year;
+
+                newData[key].hospitals = newData[key].hospitals || {};
+
+                var keyHospital = element.local_atendimento;
+                newData[key].hospitals[keyHospital] = newData[key].hospitals[keyHospital] || {};
+
+                newData[key].hospitals[keyHospital].name = element.local_atendimento;
+                newData[key].hospitals[keyHospital].lat = element.lat;
+                newData[key].hospitals[keyHospital].lng = element.lng;
+                newData[key].hospitals[keyHospital].maxCapacityLevel = element.nivel_lotacao;
+            });
+
+            that.healthCares = newData;
+
+            that.rootScope.$broadcast('healthCaresLoaded', that.healthCares);
+
+            console.log(that.healthCares);
+        },
+        function (errorPayload) {
+            console.log("Error ->" + errorPayload);
+        });
+
     this.map = new google.maps.Map(document.getElementById('map'), {
         zoom: 17,
         center: {

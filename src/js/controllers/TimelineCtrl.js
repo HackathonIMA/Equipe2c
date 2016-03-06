@@ -3,37 +3,26 @@
 angular.module('smscApp').controller('TimelineCtrl', TimelineCtrl);
 
 
-TimelineCtrl.$inject = ['$routeParams', '$timeout'];
+TimelineCtrl.$inject = ['$routeParams', '$timeout', 'HealthCareService', '$scope'];
 
-function TimelineCtrl($routeParams, $timeout) {
+function TimelineCtrl($routeParams, $timeout, HealthCareService, $scope) {
     this.isPlaying = false;
+    this.healthCareService = HealthCareService;
     this.dataIndex = 0;
     this.timelineSpeed = 1000;
     this.init();
     this.timeout = $timeout;
     this.healthHistory = {};
-    this.timelineTimer = null;
+    this.timelineTimer = [];
     this.healthHistory.formatedDate = '';
+
+    var that = this;
+    $scope.$on('healthCaresLoaded', function (event, data) {
+        that.healthHistory = data;
+    });
 }
 
-TimelineCtrl.prototype.init = function () {
-    this.data = [{
-        month: 1,
-        year: 2013,
-    }, {
-        month: 2,
-        year: 2013,
-    }, {
-        month: 3,
-        year: 2013,
-    }, {
-        month: 4,
-        year: 2013,
-    }, {
-        month: 5,
-        year: 2013,
-    }];
-};
+TimelineCtrl.prototype.init = function () {};
 
 TimelineCtrl.prototype.playClick = function ($event) {
     this.isPlaying = !this.isPlaying;
@@ -53,7 +42,8 @@ TimelineCtrl.prototype.playClick = function ($event) {
 };
 
 TimelineCtrl.prototype.slow = function () {
-    this.timeout.cancel(this.timelineTimer);
+    // this.timeout.cancel(this.timelineTimer.pop());
+    // TODO
 
     if (this.timelineSpeed < 4000) {
         this.timelineSpeed = this.timelineSpeed * 2;
@@ -62,8 +52,8 @@ TimelineCtrl.prototype.slow = function () {
 }
 
 TimelineCtrl.prototype.fast = function () {
-    this.timeout.cancel(this.timelineTimer);
-
+    // this.timeout.cancel(this.timelineTimer.pop());
+    // TODO
     if (this.timelineSpeed > 250) {
         this.timelineSpeed = this.timelineSpeed / 2;
         this.playTimeline();
@@ -71,31 +61,52 @@ TimelineCtrl.prototype.fast = function () {
 }
 
 TimelineCtrl.prototype.stopTimeline = function () {
-    this.timeout.cancel(this.timelineTimer);
+    for (var i = 0; i < this.timelineTimer.length; i++) {
+        this.timeout.cancel(this.timelineTimer[i]);
+    }
+
+    while (this.timelineTimer.length > 0) {
+        this.timelineTimer.pop();
+    }
+
     this.isPlaying = false;
 };
 
 TimelineCtrl.prototype.playTimeline = function () {
     var that = this;
 
-    this.timelineTimer = this.timeout(function () {
-        if (that.data.length > that.dataIndex) {
-            var history = that.data[that.dataIndex];
-            var formatedMonth = ('0' + history.month).slice(-2);
+    var i = 1;
 
-            history.formatedDate = formatedMonth + '/' + history.year;
+    for (var key in this.healthHistory) {
+        if (this.isPlaying) {
+            this.doTimeout(key, this.healthHistory, i)
+            i++;
+        } else {
+            return;
+        }
+    }
+};
+
+TimelineCtrl.prototype.doTimeout = function (key, healthHistory, i) {
+    var that = this;
+
+    this.timelineTimer.push(this.timeout(function () {
+        console.log(key);
+
+        if (Object.keys(healthHistory).length > that.dataIndex) {
+            var history = healthHistory[key];
 
             that.healthHistory = history;
 
-            that.playTimeline();
+            // that.playTimeline();
 
             that.dataIndex++;
         } else {
             that.stopTimeline();
             that.dataIndex = 0;
-            that.timelineSpeed = 1000;
+            // that.timelineSpeed = 1000;
             $(that.buttonIcon).removeClass();
             $(that.buttonIcon).addClass('glyphicon glyphicon-repeat');
         }
-    }, this.timelineSpeed);
-};
+    }, 1000 * i));
+}
